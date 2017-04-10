@@ -149,8 +149,8 @@ if __name__=="__main__":
 	
 	# psuedo-randomizer. It doesn't run on every invocation. This will use the date by default
 	random.seed()
-	guess = random.randint(0,5)
-	photoGuess =  random.randint(0,5)
+	guess = random.randint(0,2)
+	photoGuess =  random.randint(0,2)
 	url = ""
 	USER_FROM = os.environ['USER_FROM']
 	MAIN_ACCOUNT = os.environ['MAIN_ACCOUNT']
