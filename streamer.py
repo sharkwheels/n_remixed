@@ -20,12 +20,14 @@ class meStreamer(TwythonStreamer):
 
 	def on_success(self, data):
 		if 'text' in data:
-			acct = os.environ['MAIN_ACCOUNT']
+			acct = "@n_remixed"
 			
 			username = str(data['user']['screen_name'])
 			body = str(data['text'])
+			print(username,body)
 
 			## only respond if you are directly tweeted at
+			
 			if body.startswith(acct):
 				bodyStrip = re.sub(r'[^\w\s]','',body.lower())
 				print("@%s: %s" % (username, bodyStrip))
@@ -37,6 +39,7 @@ class meStreamer(TwythonStreamer):
 					print("!sent: ",toTweet)
 				except TwythonError as e:
 					print(e)
+			
 					
 meStream = meStreamer(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
-meStream.statuses.filter(track=os.environ['MAIN_ACCOUNT']) #only works if you are public
+meStream.statuses.filter(track="@n_remixed") #only works if you are public
