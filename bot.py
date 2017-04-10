@@ -79,12 +79,13 @@ def getLastTweet(twitter,main_account):
 
 def filterTweet(body):
 	### Filter your results and remove most of the weird shit
-	#body = re.sub(r'[^\w\s]','',body)
+	body = re.sub(r'[^\w\s]','',body) #take out all the punctuation
 	body = re.sub(r'\b(RT|MT) .+','',body) #take out anything after RT or MT
 	body = re.sub(r'(\#|@|(h\/t)|(http))\S+','',body) #Take out URLs, hashtags, hts, etc.
 	body = re.sub(r'\n','', body) #take out new lines.
 	body = re.sub(r'\"|\(|\)', '', body) #take out quotes.
 	body = re.sub(r'\s+\(?(via|says)\s@\w+\)?', '', body) # remove attribution
+	body.lower()
 	return body
 
 def makeSentence(txt):
