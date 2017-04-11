@@ -46,6 +46,7 @@ def connect():
 
 def getSourceTweets(twitter,max_id,user_from):
 	### Get some source tweets from my actual twitter timeline
+	print("!sourceTweets", twitter,max_id,user_from)
 	sourceTweets = []
 	try:
 		data = twitter.get_user_timeline(screen_name=user_from,count=200,trim_user=True,exclude_replies=True,max_id=max_id)
@@ -169,6 +170,7 @@ if __name__=="__main__":
 		# get the last tweet and make a source for the markov library
 		lastTweet = getLastTweet(twitter,MAIN_ACCOUNT)
 		sourceTweets = getSourceTweets(twitter,max_id,USER_FROM)
+		print("!main: ",sourceTweets)
 		sourceText = ''.join(sourceTweets)
 		
 		# generate a scentence
