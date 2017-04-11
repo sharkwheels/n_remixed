@@ -14,35 +14,6 @@
 #	http://stackoverflow.com/questions/43302982/update-twitter-status-with-an-image-in-twython-keep-getting-api-errors/
 # ToDo
 #	try and fix spacing some issues in scentences
-# done
-#	work in @ replies (Streaming api?)
-# 	make a psuedo randomizer for each time it runs to make it not run every hour
-# 	make apsuedo randomizer for images?
-#	pick a random start date in the twitter timeline to avoid too many like tweets
-#	make a simple flask face for heroku
-###############################
-###############################
-# Me remixed
-# For: IAMD 2017
-# Remixes my private timeline into a public twitter feed
-# using a markov chain
-# This only runs on a cron / scheduler 
-# v1.0
-# REFERENCES
-# 	http://stackoverflow.com/questions/27094275/how-to-post-image-to-twitter-with-twython
-# 	https://www.flickr.com/help/forum/en-us/72157637405229644/
-# 	http://joequery.me/code/flickr-api-image-search-python/
-#	http://www.craigaddyman.com/mining-all-tweets-with-python/
-# 	http://www.programcreek.com/python/example/82392/twython.TwythonError
-#	http://stackoverflow.com/questions/43302982/update-twitter-status-with-an-image-in-twython-keep-getting-api-errors/
-# ToDo
-#	try and fix spacing some issues in scentences
-# done
-#	work in @ replies (Streaming api?)
-# 	make a psuedo randomizer for each time it runs to make it not run every hour
-# 	make apsuedo randomizer for images?
-#	pick a random start date in the twitter timeline to avoid too many like tweets
-#	make a simple flask face for heroku
 ###############################
 
 from __future__ import print_function
@@ -58,6 +29,9 @@ from random import choice
 from tweetIds import *
 
 def connect():
+	"""
+	Connect to Twitter
+	"""
 	CONSUMER_KEY = os.environ['CONSUMER_KEY']
 	CONSUMER_SECRET = os.environ['CONSUMER_SECRET']
 	ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
@@ -67,8 +41,10 @@ def connect():
 	return twitter
 
 def getSourceTweets(twitter,max_id,user_from):
-	### Get some source tweets from my actual twitter timeline
-	print("!sourceTweets", twitter,max_id,user_from)
+	"""
+	Get some source tweets from my actual twitter timeline
+	"""
+	#print("!sourceTweets", twitter,max_id,user_from)
 	sourceTweets = []
 	try:
 		data = twitter.get_user_timeline(screen_name=user_from,count=200,trim_user=True,exclude_replies=True,max_id=max_id)
@@ -85,7 +61,9 @@ def getSourceTweets(twitter,max_id,user_from):
 	return sourceTweets
 
 def getLastTweet(twitter,main_account):
-	### Get the last tweet on the n_remix timeline
+	"""
+	Get the last tweet on the n_remix timeline
+	"""
 	lastTweet = ''
 	try:
 		data = twitter.get_user_timeline(screen_name=main_account,count=1,trim_user=True,exclude_replies=True)
@@ -99,7 +77,9 @@ def getLastTweet(twitter,main_account):
 	return lastTweet	
 
 def filterTweet(body):
-	### Filter your results and remove most of the weird shit
+	"""
+	Filter your results and remove most of the weird shit
+	"""
 	body = re.sub(r'\b(RT|MT) .+','',body) #take out anything after RT or MT
 	body = re.sub(r'(\#|@|(h\/t)|(http))\S+','',body) #Take out URLs, hashtags, hts, etc.
 	body = re.sub(r'\n','', body) #take out new lines.
@@ -108,18 +88,28 @@ def filterTweet(body):
 	return body
 
 def makeSentence(text):
-	### Pass everything to the markov module
-	print("!makeSentence: ",text)
-
+	"""
+	Pass everything to the markov module
+	"""
+	#print("!makeSentence: ",text)
+	results = []
 	text_model = markovify.Text(text)
-	status = text_model.make_sentence()
-	print("!makeSentence",status)
-	return status
+	for i in range(5):
+		status = text_model.make_short_sentence(140)
+		if status:
+			results.append(status)
+	print(len(results))
+	if len(results) > 0:
+		toReturn = random.choice(results)
+		return toReturn
+	else:
+		pass
 
 def findAnImage(status):
-	### Go find an image from my flickr feed
-
-	## define a search term from the new scentence you created. 
+	"""
+	Go find an image from my flickr feed
+	Define a search term from the new scentence you created. 
+	"""
 	print("!findAnImage - status: ", status)
 	words = status.lower()
 	words = status.split()
@@ -161,18 +151,20 @@ def findAnImage(status):
 	for i in photos:
 		url = i['url_o']
 		print(url)
-		photosToChooseFrom.append(url)	
-	toOpen = random.choice(photosToChooseFrom)
-	return toOpen
-	
-	
+		photosToChooseFrom.append(url)
+	print(len(photosToChooseFrom))
+	if len(photosToChooseFrom) > 0:
+		toOpen = random.choice(photosToChooseFrom)
+		return toOpen
+	else:
+		pass
 
 if __name__=="__main__":
 	
 	# psuedo-randomizer. It doesn't run on every invocation. This will use the date by default
 	random.seed()
 	guess = random.randint(0,2)
-	photoGuess =  random.randint(0,2)
+	photoGuess = random.randint(0,2)
 	url = ""
 	USER_FROM = os.environ['USER_FROM']
 	MAIN_ACCOUNT = os.environ['MAIN_ACCOUNT']
@@ -193,7 +185,7 @@ if __name__=="__main__":
 		lastTweet = getLastTweet(twitter,MAIN_ACCOUNT)
 		sourceTweets = getSourceTweets(twitter,max_id,USER_FROM)
 		#print("!main: ",sourceTweets)
-		sourceText = "".join(sourceTweets)
+		sourceText = " ".join(sourceTweets)
 		#print("!main: ",sourceText)			#working
 		
 		# generate a scentence
@@ -204,21 +196,21 @@ if __name__=="__main__":
 		if photoGuess == 0:
 			url = findAnImage(newScentence)	
 		# make sure the new scentence isn't the same as the old sentece
-		# else get a new one
-		if newScentence != lastTweet:
-			if url:
-				response = requests.get(url)
-				photo = BytesIO(response.content)
-				response = twitter.upload_media(media=photo)
-				twitter.update_status(status=newScentence, media_ids=[response['media_id']])
-				print("!sent+image: ",newScentence,response)
-				url = ""
+		if newScentence:
+			if newScentence != lastTweet:
+				if url:
+					response = requests.get(url)
+					photo = BytesIO(response.content)
+					response = twitter.upload_media(media=photo)
+					twitter.update_status(status=newScentence, media_ids=[response['media_id']])
+					print("!sent+image: ",newScentence,response)
+					url = ""
+				else:
+					print("no photo at this time")
+					twitter.update_status(status=newScentence)
+					print("!sent: ",newScentence)
 			else:
-				print("no photo at this time")
-				twitter.update_status(status=newScentence)
-				print("!sent: ",newScentence)
-		else:
-			newScentence = makeSentence(sourceText)
+				print("was the same, maybe in 10 minutes")
 	else:
 		print("not invoking this time")
 
