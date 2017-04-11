@@ -3,7 +3,7 @@
 # Me remixed
 # For: IAMD 2017
 ########################
-
+from __future__ import print_function
 from twython import Twython, TwythonError
 from twython import TwythonStreamer
 import os

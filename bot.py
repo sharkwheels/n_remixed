@@ -91,13 +91,12 @@ def filterTweet(body):
 def makeSentence(txt):
 	### Pass everything to the markov module
 	print("!makeSentence: ",txt)
-	status = ""
 	text_model = markovify.Text(txt)
 	for i in range(1):
 		status = text_model.make_short_sentence(140)
-	print("!makeSentence: ", status)
-	return status
-
+		print("!makeSentence: ", status)
+		return status
+	
 def findAnImage(status):
 	### Go find an image from my flickr feed
 
@@ -179,11 +178,8 @@ if __name__=="__main__":
 		
 		# generate a scentence
 		newScentence = makeSentence(sourceText)
-
-		print("!newScentence: ",newScentence)
-		print("!lastTweet: ", lastTweet)
-
-		print("!makeSentence: ", newScentence)
+		print("!main(newScentence): ",newScentence)
+		print("!main(lastTweet): ", lastTweet)
 		# if its time to go find an image...
 		if photoGuess == 0:
 			url = findAnImage(newScentence)	
