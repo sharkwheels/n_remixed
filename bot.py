@@ -179,13 +179,13 @@ if __name__=="__main__":
 		#print("!newScentence: ",newScentence)
 		#print("!lastTweet: ", lastTweet)
 		textModel = markovify.Text(sourceText)
-		newScentence = textModel.make_short_sentence(140)
+		newScentence = ""
+		for i in range(1):
+			newScentence = textModel.make_short_sentence(140)
 		print("!makeSentence: ", newScentence)
-
 		# if its time to go find an image...
 		if photoGuess == 0:
 			url = findAnImage(newScentence)	
-
 		# make sure the new scentence isn't the same as the old sentece
 		# else get a new one
 		if newScentence != lastTweet:
