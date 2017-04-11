@@ -172,12 +172,15 @@ if __name__=="__main__":
 		sourceTweets = getSourceTweets(twitter,max_id,USER_FROM)
 		print("!main: ",sourceTweets)
 		sourceText = "".join(sourceTweets)
-		print("!main: ",sourceText)
+		print("!main: ",sourceText)			#working
 		
 		# generate a scentence
-		newScentence = makeSentence(sourceText)
-		print("!newScentence: ",newScentence)
-		print("!lastTweet: ", lastTweet)
+		#newScentence = makeSentence(sourceText)
+		#print("!newScentence: ",newScentence)
+		#print("!lastTweet: ", lastTweet)
+		textModel = markovify.Text(txt)
+		newScentence = textModel.make_short_sentence(140)
+		print("!makeSentence: ", newScentence)
 
 		# if its time to go find an image...
 		if photoGuess == 0:
