@@ -90,10 +90,10 @@ def filterTweet(body):
 
 def makeSentence(txt):
 	### Pass everything to the markov module
-	weirdAddWords = []
 	textModel = markovify.Text(txt)
-	status = textModel.make_short_sentence(140)
-	return status
+	beep = textModel.make_short_sentence(140)
+	print("!makeSentence: ", beep)
+	return beep
 
 def findAnImage(status):
 	### Go find an image from my flickr feed
