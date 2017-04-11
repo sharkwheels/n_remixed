@@ -85,7 +85,6 @@ def filterTweet(body):
 	body = re.sub(r'\n','', body) #take out new lines.
 	body = re.sub(r'\"|\(|\)', '', body) #take out quotes.
 	body = re.sub(r'\s+\(?(via|says)\s@\w+\)?', '', body) # remove attribution
-	body.lower()
 	return body
 
 def makeSentence(txt):
