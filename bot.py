@@ -1,27 +1,3 @@
-###############################
-# Me remixed
-# For: IAMD 2017
-# Remixes my private timeline into a public twitter feed
-# using a markov chain
-# This only runs on a cron / scheduler 
-# v1.0
-# REFERENCES
-# 	http://stackoverflow.com/questions/27094275/how-to-post-image-to-twitter-with-twython
-# 	https://www.flickr.com/help/forum/en-us/72157637405229644/
-# 	http://joequery.me/code/flickr-api-image-search-python/
-#	http://www.craigaddyman.com/mining-all-tweets-with-python/
-# 	http://www.programcreek.com/python/example/82392/twython.TwythonError
-#	http://stackoverflow.com/questions/43302982/update-twitter-status-with-an-image-in-twython-keep-getting-api-errors/
-# ToDo
-#	try and fix spacing some issues in scentences
-# done
-#	work in @ replies (Streaming api?)
-# 	make a psuedo randomizer for each time it runs to make it not run every hour
-# 	make apsuedo randomizer for images?
-#	pick a random start date in the twitter timeline to avoid too many like tweets
-#	make a simple flask face for heroku
-###############################
-
 from __future__ import print_function
 from twython import Twython, TwythonError
 import flickrapi
@@ -46,7 +22,6 @@ def connect():
 
 def getSourceTweets(twitter,max_id,user_from):
 	### Get some source tweets from my actual twitter timeline
-	print("!sourceTweets", twitter,max_id,user_from)
 	sourceTweets = []
 	try:
 		data = twitter.get_user_timeline(screen_name=user_from,count=200,trim_user=True,exclude_replies=True,max_id=max_id)
@@ -80,7 +55,7 @@ def getLastTweet(twitter,main_account):
 
 def filterTweet(body):
 	### Filter your results and remove most of the weird shit
-	body = re.sub(r'[^\w\s]','',body) #take out all the punctuation
+	#body = re.sub(r'[^\w\s]','',body)
 	body = re.sub(r'\b(RT|MT) .+','',body) #take out anything after RT or MT
 	body = re.sub(r'(\#|@|(h\/t)|(http))\S+','',body) #Take out URLs, hashtags, hts, etc.
 	body = re.sub(r'\n','', body) #take out new lines.
@@ -90,13 +65,10 @@ def filterTweet(body):
 
 def makeSentence(txt):
 	### Pass everything to the markov module
-	print("!makeSentence: ",txt)
-	text_model = markovify.Text(txt)
-	for i in range(1):
-		status = text_model.make_short_sentence(140)
-		print("!makeSentence: ", status)
-		return status
-	
+	textModel = markovify.Text(txt)
+	status = textModel.make_short_sentence(140)
+	return status
+
 def findAnImage(status):
 	### Go find an image from my flickr feed
 
@@ -151,10 +123,10 @@ if __name__=="__main__":
 	
 	# psuedo-randomizer. It doesn't run on every invocation. This will use the date by default
 	random.seed()
-	guess = random.randint(0,1)
-	photoGuess =  random.randint(0,1)
+	guess = random.randint(0,5)
+	photoGuess =  random.randint(0,5)
 	url = ""
-	USER_FROM = "_nadine"
+	USER_FROM = os.environ['USER_FROM']
 	MAIN_ACCOUNT = os.environ['MAIN_ACCOUNT']
 
 	# only run if the number is 0 
@@ -172,17 +144,17 @@ if __name__=="__main__":
 		# get the last tweet and make a source for the markov library
 		lastTweet = getLastTweet(twitter,MAIN_ACCOUNT)
 		sourceTweets = getSourceTweets(twitter,max_id,USER_FROM)
-		#print("!main: ",sourceTweets)
-		sourceText = "".join(sourceTweets)
-		#print("!main: ",sourceText)			#working
+		sourceText = ''.join(sourceTweets)
 		
 		# generate a scentence
 		newScentence = makeSentence(sourceText)
-		print("!main(newScentence): ",newScentence)
-		print("!main(lastTweet): ", lastTweet)
+		print("!newScentence: ",newScentence)
+		print("!lastTweet: ", lastTweet)
+
 		# if its time to go find an image...
 		if photoGuess == 0:
 			url = findAnImage(newScentence)	
+
 		# make sure the new scentence isn't the same as the old sentece
 		# else get a new one
 		if newScentence != lastTweet:
@@ -201,3 +173,4 @@ if __name__=="__main__":
 			newScentence = makeSentence(sourceText)
 	else:
 		print("not invoking this time")
+"""
