@@ -90,10 +90,13 @@ def filterTweet(body):
 
 def makeSentence(txt):
 	### Pass everything to the markov module
-	textModel = markovify.Text(txt)
-	beep = textModel.make_short_sentence(140)
-	print("!makeSentence: ", beep)
-	return beep
+	print("!makeSentence: ",txt)
+	status = ""
+	text_model = markovify.Text(txt)
+	for i in range(1):
+		status = text_mdoel.make_short_sentence(140)
+	print("!makeSentence: ", status)
+	return status
 
 def findAnImage(status):
 	### Go find an image from my flickr feed
@@ -170,12 +173,13 @@ if __name__=="__main__":
 		# get the last tweet and make a source for the markov library
 		lastTweet = getLastTweet(twitter,MAIN_ACCOUNT)
 		sourceTweets = getSourceTweets(twitter,max_id,USER_FROM)
-		print("!main: ",sourceTweets)
+		#print("!main: ",sourceTweets)
 		sourceText = "".join(sourceTweets)
-		print("!main: ",sourceText)			#working
+		#print("!main: ",sourceText)			#working
 		
 		# generate a scentence
 		newScentence = makeSentence(sourceText)
+		
 		print("!newScentence: ",newScentence)
 		print("!lastTweet: ", lastTweet)
 
