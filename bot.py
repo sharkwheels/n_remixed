@@ -178,7 +178,7 @@ if __name__=="__main__":
 		#newScentence = makeSentence(sourceText)
 		#print("!newScentence: ",newScentence)
 		#print("!lastTweet: ", lastTweet)
-		textModel = markovify.Text(txt)
+		textModel = markovify.Text(sourceText)
 		newScentence = textModel.make_short_sentence(140)
 		print("!makeSentence: ", newScentence)
 
