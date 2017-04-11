@@ -24,10 +24,10 @@ import os
 import random
 import re
 import requests
+import webbrowser
 from io import BytesIO
 from random import choice
 from tweetIds import *
-import webbrowser
 
 def connect():
 	"""
@@ -40,33 +40,6 @@ def connect():
 	twitter = Twython(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 	twitter.verify_credentials()
 	return twitter
-
-def flickrConnect():
-	"""
-	Connect to Flickr
-	"""
-	# OAuth shit
-	FLICKR_KEY = os.environ['FLICKR_KEY']
-	FLICKR_SECRET = os.environ['FLICKR_SECRET']
-	flickr = flickrapi.FlickrAPI(FLICKR_KEY, FLICKR_SECRET,format='parsed-json')
-	# Only do this if we don't have a valid token already
-	if not flickr.token_valid(perms='read'):
-
-		# Get a request token
-		flickr.get_request_token(oauth_callback='oob')
-
-		# Open a browser at the authentication URL. Do this however
-		# you want, as long as the user visits that URL.
-		authorize_url = flickr.auth_url(perms='read')
-		webbrowser.open_new_tab(authorize_url)
-
-		# Get the verifier code from the user. Do this however you
-		# want, as long as the user gives the application the code.
-		verifier = str(input('Verifier code: '))
-
-		# Trade the request token for an access token
-		flickr.get_access_token(verifier)
-	return flickr
 
 def getSourceTweets(twitter,max_id,user_from):
 	"""
@@ -133,7 +106,7 @@ def makeSentence(text):
 	else:
 		pass
 
-def findAnImage(flickr,status):
+def findAnImage(status):
 	"""
 	Go find an image from my flickr feed
 	Define a search term from the new scentence you created. 
@@ -162,6 +135,12 @@ def findAnImage(flickr,status):
 	print("!findAnImage - scrubbedWords: ",scrubbedWords)
 	searchTerm = random.choice(scrubbedWords)
 	print("!findAnImage: search: ",searchTerm)
+	
+	# OAuth shit
+	FLICKR_KEY = os.environ['FLICKR_KEY']
+	FLICKR_SECRET = os.environ['FLICKR_SECRET']
+	flickr = flickrapi.FlickrAPI(FLICKR_KEY, FLICKR_SECRET,format='parsed-json')
+	flickr.authenticate_via_browser(perms='read')
 
 	# Find The Thing
 	photosToChooseFrom = []
@@ -185,7 +164,7 @@ if __name__=="__main__":
 	
 	# psuedo-randomizer. It doesn't run on every invocation. This will use the date by default
 	random.seed()
-	guess = random.randint(0,2)
+	guess = 0#random.randint(0,2)
 	photoGuess = 0 #random.randint(0,2)
 	url = ""
 	USER_FROM = os.environ['USER_FROM']
@@ -196,7 +175,6 @@ if __name__=="__main__":
 
 		# connect to twitter
 		twitter = connect()
-		flickr = flickrConnect()
 
 		# getting max_id from a giant ass list to get 200 tweets from different places in timeline
 		maxIdDataBase = maxIdList
@@ -217,7 +195,7 @@ if __name__=="__main__":
 		print("!main(lastTweet): ", lastTweet)
 		# if its time to go find an image...
 		if photoGuess == 0:
-			url = findAnImage(flickr,newScentence)	
+			url = findAnImage(newScentence)	
 		# make sure the new scentence isn't the same as the old sentece
 		if newScentence:
 			if newScentence != lastTweet:
