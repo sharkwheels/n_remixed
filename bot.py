@@ -193,7 +193,7 @@ if __name__=="__main__":
 		lastTweet = getLastTweet(twitter,MAIN_ACCOUNT)
 		sourceTweets = getSourceTweets(twitter,max_id,USER_FROM)
 		#print("!main: ",sourceTweets)
-		sourceText = " ".join(sourceTweets)
+		sourceText = "".join(sourceTweets)
 		#print("!main: ",sourceText)			#working
 		
 		# generate a scentence
