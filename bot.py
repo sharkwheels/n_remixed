@@ -151,7 +151,7 @@ if __name__=="__main__":
 	guess = random.randint(0,1)
 	photoGuess =  random.randint(0,1)
 	url = ""
-	USER_FROM = os.environ['USER_FROM']
+	USER_FROM = "_nadine"
 	MAIN_ACCOUNT = os.environ['MAIN_ACCOUNT']
 
 	# only run if the number is 0 
