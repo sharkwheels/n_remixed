@@ -22,7 +22,7 @@
 #	make a simple flask face for heroku
 ###############################
 
-
+from __future__ import print_function
 from twython import Twython, TwythonError
 import flickrapi
 import markovify
@@ -142,7 +142,7 @@ def findAnImage(status):
 	## get the original photo. I think they should ALL have original sizes. I hope. ugh.
 	for i in photos:
 		url = i['url_o']
-		print("{0}".format(url))
+		print(url)
 		photosToChooseFrom.append(url)	
 	toOpen = random.choice(photosToChooseFrom)
 	return toOpen
