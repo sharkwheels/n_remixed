@@ -94,7 +94,7 @@ def makeSentence(txt):
 	status = ""
 	text_model = markovify.Text(txt)
 	for i in range(1):
-		status = text_mdoel.make_short_sentence(140)
+		status = text_model.make_short_sentence(140)
 	print("!makeSentence: ", status)
 	return status
 
@@ -179,7 +179,7 @@ if __name__=="__main__":
 		
 		# generate a scentence
 		newScentence = makeSentence(sourceText)
-		
+
 		print("!newScentence: ",newScentence)
 		print("!lastTweet: ", lastTweet)
 
