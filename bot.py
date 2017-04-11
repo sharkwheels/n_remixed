@@ -27,6 +27,7 @@ import requests
 from io import BytesIO
 from random import choice
 from tweetIds import *
+import webbrowser
 
 def connect():
 	"""
@@ -139,7 +140,8 @@ def findAnImage(status):
 	FLICKR_KEY = os.environ['FLICKR_KEY']
 	FLICKR_SECRET = os.environ['FLICKR_SECRET']
 	flickr = flickrapi.FlickrAPI(FLICKR_KEY, FLICKR_SECRET,format='parsed-json')
-	#flickr.authenticate_via_browser(perms='read')
+	url = flickr.authenticate_via_browser(perms='read')
+	webbrowser.open_new(url)
 
 	# Find The Thing
 	photosToChooseFrom = []
