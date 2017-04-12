@@ -1,6 +1,8 @@
 ### IMPORTS ####################################################################
 
 from flask import Flask, render_template, request, redirect, url_for, flash
+import logging
+logging.basicConfig(level=logging.INFO)
 
 ### FLASK SETUP  ####################################################################
 
