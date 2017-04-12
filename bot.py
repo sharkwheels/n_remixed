@@ -140,7 +140,7 @@ def findAnImage(status):
 	FLICKR_KEY = os.environ['FLICKR_KEY']
 	FLICKR_SECRET = os.environ['FLICKR_SECRET']
 	flickr = flickrapi.FlickrAPI(FLICKR_KEY, FLICKR_SECRET,format='parsed-json')
-	flickr.authenticate_via_browser(perms='read')
+	#flickr.authenticate_via_browser(perms='read')
 
 	# Find The Thing
 	photosToChooseFrom = []
